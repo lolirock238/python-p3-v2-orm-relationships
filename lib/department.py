@@ -1,5 +1,4 @@
 # lib/department.py
-
 from __init__ import CURSOR, CONN
 
 
@@ -139,3 +138,14 @@ class Department:
 
         row = CURSOR.execute(sql, (name,)).fetchone()
         return cls.instance_from_db(row) if row else None
+
+    # THIS METHOD NEEDS TO BE INDENTED TO BE INSIDE THE CLASS
+    def employees(self):
+        """Return list of employees associated with current department"""
+        from employee import Employee  # Import inside method to avoid circular imports
+        sql = """
+            SELECT * FROM employees
+            WHERE department_id = ?
+        """
+        rows = CURSOR.execute(sql, (self.id,)).fetchall()
+        return [Employee.instance_from_db(row) for row in rows]
